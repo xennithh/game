@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>💖 Dispara Corazones - Juego 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600;700;900&family=Dancing+Script:wght@700&family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #ff6b9d 75%, #ffc3a0 100%);
+            background-size: 400% 400%;
+            animation: gradientFlow 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            font-size: 22px;
+            opacity: 0;
+            animation: floatParticle linear infinite;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+                transform: scale(1);
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Main game container */
+        .game-container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 35px;
+            padding: 30px;
+            box-shadow: 0 35px 90px rgba(0, 0, 0, 0.4), 
+                        inset 0 0 50px rgba(255, 255, 255, 0.3);
+            max-width: 900px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(20px);
+            animation: slideIn 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 4px solid rgba(255, 182, 193, 0.5);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(80px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Header section */
+        .game-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            animation: headerFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes headerFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .cat-emoji {
+            font-size: clamp(45px, 10vw, 70px);
+            animation: catWiggle 2s ease-in-out infinite;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+        }
+
+        @keyframes catWiggle {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+        }
+
+        .hearts-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .heart-emoji {
+            font-size: clamp(30px, 7vw, 50px);
+            animation: heartBeat 1.2s ease-in-out infinite;
+        }
+
+        .heart-emoji:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { 
+                transform: scale(1);
+            }
+            50% { 
+                transform: scale(1.3);
+            }
+        }
+
+        /* Title */
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(32px, 7vw, 52px);
+            color: #e91e63;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 4px 4px 0 #ffc1e3, 
+                         7px 7px 25px rgba(233, 30, 99, 0.5);
+            letter-spacing: 3px;
+            animation: titleGlow 2.5s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { 
+                text-shadow: 4px 4px 0 #ffc1e3, 7px 7px 25px rgba(233, 30, 99, 0.5);
+                transform: scale(1);
+            }
+            50% { 
+                text-shadow: 4px 4px 0 #ffc1e3, 7px 7px 45px rgba(233, 30, 99, 0.9);
+                transform: scale(1.02);
+            }
+        }
+
+        /* Dedication card */
+        .dedication-card {
+            background: linear-gradient(135deg, #fff 0%, #fce4ec 100%);
+            border: 3px solid #f8bbd0;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px auto;
+            text-align: center;
+            box-shadow: 0 12px 35px rgba(233, 30, 99, 0.25);
+            max-width: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dedication-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .dedication-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(24px, 5vw, 32px);
+            color: #c2185b;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dedication-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(18px, 4vw, 24px);
+            color: #d81b60;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Stats bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #fff 0%, #e1f5fe 100%);
+            border: 3px solid #81d4fa;
+            border-radius: 18px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(1, 87, 155, 0.2);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(1, 87, 155, 0.35);
+        }
+
+        .stat-label {
+            font-size: clamp(12px, 2.8vw, 15px);
+            font-weight: 700;
+            color: #01579b;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: clamp(20px, 5vw, 32px);
+            font-weight: 900;
+            color: #0277bd;
+            text-shadow: 2px 2px 5px rgba(1, 87, 155, 0.3);
+        }
+
+        .lives-emoji {
+            font-size: clamp(22px, 5vw, 30px);
+            letter-spacing: 5px;
+        }
+
+        /* Canvas */
+        canvas {
+            border: 6px solid #e91e63;
+            border-radius: 25px;
+            background: linear-gradient(180deg, #fce4ec 0%, #f8bbd0 100%);
+            display: block;
+            margin: 25px auto;
+            box-shadow: 0 20px 50px rgba(233, 30, 99, 0.45), 
+                        inset 0 0 40px rgba(255, 255, 255, 0.5);
+            max-width: 100%;
+            height: auto;
+            touch-action: none;
+        }
+
+        /* Controls */
+        .controls-section {
+            margin-top: 25px;
+        }
+
+        .controls-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 15px;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, #e91e63, #ec407a);
+            color: white;
+            border: none;
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            font-size: 32px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(233, 30, 99, 0.45);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .control-btn::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            border: 3px solid rgba(233, 30, 99, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .control-btn:active::after {
+            opacity: 1;
+        }
+
+        .control-btn:active {
+            transform: scale(0.88);
+            box-shadow: 0 5px 18px rgba(233, 30, 99, 0.4);
+        }
+
+        .control-btn.shoot {
+            width: 88px;
+            height: 88px;
+            background: linear-gradient(135deg, #ff1744, #f50057);
+            animation: shootPulse 2s ease-in-out infinite;
+            font-size: 38px;
+        }
+
+        @keyframes shootPulse {
+            0%, 100% { 
+                box-shadow: 0 10px 25px rgba(255, 23, 68, 0.45);
+            }
+            50% { 
+                box-shadow: 0 10px 40px rgba(255, 23, 68, 0.75);
+            }
+        }
+
+        .keyboard-hint {
+            text-align: center;
+            font-size: clamp(11px, 2.5vw, 14px);
+            color: #666;
+            font-weight: 600;
+            display: none;
+        }
+
+        /* Modals */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            animation: fadeIn 0.4s ease;
+            padding: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal {
+            background: linear-gradient(135deg, #fff 0%, #fce4ec 100%);
+            padding: 40px;
+            border-radius: 35px;
+            text-align: center;
+            max-width: 550px;
+            width: 95%;
+            box-shadow: 0 35px 90px rgba(0, 0, 0, 0.7);
+            animation: modalPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+            border: 5px solid rgba(255, 182, 193, 0.6);
+        }
+
+        @keyframes modalPop {
+            0% {
+                transform: scale(0.4) rotate(-15deg);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1) rotate(0);
+                opacity: 1;
+            }
+        }
+
+        .modal h2 {
+            font-family: 'Fredoka One', cursive;
+            color: #e91e63;
+            font-size: clamp(24px, 5.5vw, 34px);
+            margin-bottom: 20px;
+        }
+
+        .modal p {
+            font-size: clamp(14px, 3.5vw, 18px);
+            line-height: 1.8;
+            margin: 15px 0;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .reward-icon {
+            font-size: clamp(60px, 14vw, 95px);
+            margin: 20px 0;
+            animation: iconBounce 1.2s ease infinite;
+        }
+
+        @keyframes iconBounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.15); }
+        }
+
+        .score-display {
+            font-size: clamp(38px, 9vw, 56px);
+            color: #c2185b;
+            margin: 22px 0;
+            font-weight: 900;
+            text-shadow: 3px 3px 0 #ffc1e3;
+        }
+
+        .new-record {
+            color: #f9a825;
+            font-size: clamp(16px, 4vw, 22px);
+            font-weight: 800;
+            margin: 12px 0;
+            animation: recordBlink 1.2s ease infinite;
+        }
+
+        @keyframes recordBlink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.08); }
+        }
+
+        .countdown-number {
+            font-size: clamp(90px, 22vw, 170px);
+            color: #e91e63;
+            font-weight: 900;
+            text-shadow: 6px 6px 0 #ffc1e3, 12px 12px 35px rgba(233, 30, 99, 0.6);
+            animation: countPulse 1s ease-in-out;
+        }
+
+        @keyframes countPulse {
+            0% { 
+                transform: scale(0) rotate(-45deg);
+                opacity: 0;
+            }
+            60% {
+                transform: scale(1.3) rotate(5deg);
+            }
+            100% { 
+                transform: scale(1) rotate(0);
+                opacity: 1;
+            }
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #e91e63, #ec407a);
+            color: white;
+            border: none;
+            padding: 18px 45px;
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(15px, 3.8vw, 20px);
+            font-weight: 800;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 15px 8px;
+            box-shadow: 0 12px 30px rgba(233, 30, 99, 0.5);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:active::before {
+            width: 350px;
+            height: 350px;
+        }
+
+        .btn:active {
+            transform: scale(0.93);
+        }
+
+        .btn.secondary {
+            background: linear-gradient(135deg, #9c27b0, #ba68c8);
+        }
+
+        .floating-phrase {
+            position: fixed;
+            font-size: clamp(16px, 4vw, 22px);
+            font-weight: 800;
+            color: #e91e63;
+            pointer-events: none;
+            z-index: 1999;
+            animation: floatPhrase 2.2s ease-out forwards;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        @keyframes floatPhrase {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(0.8);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-90px) scale(1.6);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .game-container {
+                padding: 20px;
+            }
+            
+            canvas {
+                border-width: 4px;
+            }
+
+            .control-btn {
+                width: 65px;
+                height: 65px;
+                font-size: 28px;
+            }
+
+            .control-btn.shoot {
+                width: 75px;
+                height: 75px;
+                font-size: 32px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .keyboard-hint {
+                display: block;
+            }
+
+            .control-btn:hover {
+                transform: translateY(-6px) scale(1.08);
+                box-shadow: 0 15px 35px rgba(233, 30, 99, 0.6);
+            }
+
+            .btn:hover {
+                transform: translateY(-5px) scale(1.05);
+                box-shadow: 0 18px 40px rgba(233, 30, 99, 0.65);
+            }
+
+            .btn:hover::before {
+                width: 350px;
+                height: 350px;
+            }
+
+            .stat-box {
+                padding: 20px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .game-container {
+                padding: 40px;
+            }
+
+            h1 {
+                font-size: 58px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Game Over Screen -->
+    <div class="overlay" id="gameOverScreen">
+        <div class="modal">
+            <h2>¡Ups! Te quedaste sin vidas 🥺</h2>
+            <div class="score-display" id="finalScore">0 Puntos</div>
+            <div class="new-record" id="recordMsg" style="display: none;">✨ ¡NUEVO RÉCORD! ✨</div>
+            <button class="btn" onclick="restartGame()">JUGAR DE NUEVO</button>
+            <button class="btn secondary" onclick="viewCards()">VER MIS CARTAS 💌</button>
+        </div>
+    </div>
+
+    <!-- Reward Screen -->
+    <div class="overlay" id="rewardScreen">
+        <div class="modal">
+            <h2>¡CARTA DESBLOQUEADA! 💌</h2>
+            <div class="reward-icon">💝</div>
+            <p style="font-size: clamp(16px, 4vw, 22px); font-weight: 700; color: #e91e63;">¡Nueva Carta de Amor!</p>
+            <p>Has desbloqueado una carta especial ❤️</p>
+            <button class="btn" onclick="closeReward()">CONTINUAR</button>
+        </div>
+    </div>
+
+    <!-- Countdown Screen -->
+    <div class="overlay" id="countdownScreen">
+        <div class="modal">
+            <h2>¡Prepárate mi amor! 💖</h2>
+            <div class="countdown-number" id="countdownNumber">3</div>
+        </div>
+    </div>
+
+    <!-- Main Game -->
+    <div class="game-container">
+        <!-- Header -->
+        <div class="game-header">
+            <div class="cat-emoji">😺</div>
+            <div class="hearts-group">
+                <div class="heart-emoji">❤️</div>
+                <div class="heart-emoji">💕</div>
+            </div>
+        </div>
+
+        <!-- Title -->
+        <h1>Dispara Corazones</h1>
+
+        <!-- Dedication -->
+        <div class="dedication-card">
+            <div class="dedication-title">Para Mi Amor</div>
+            <div class="dedication-text">Con todo mi amor 💖</div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-bar">
+            <div class="stat-box">
+                <div class="stat-label">Puntos</div>
+                <div class="stat-value" id="score">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Vidas</div>
+                <div class="lives-emoji" id="lives">🥺🥺🥺</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Récord</div>
+                <div class="stat-value" id="highScore">0</div>
+            </div>
+        </div>
+
+        <!-- Canvas -->
+        <canvas id="gameCanvas" width="600" height="500"></canvas>
+
+        <!-- Controls -->
+        <div class="controls-section">
+            <div class="controls-buttons">
+                <button class="control-btn" id="leftBtn">◄</button>
+                <button class="control-btn shoot" id="shootBtn">💋</button>
+                <button class="control-btn" id="rightBtn">►</button>
+            </div>
+            <div class="keyboard-hint">← → o A/D para mover | ESPACIO para disparar</div>
+        </div>
+    </div>
+
+    <script>
+        // Game Constants
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Responsive canvas
+        function resizeCanvas() {
+            const maxWidth = Math.min(600, window.innerWidth - 60);
+            canvas.width = maxWidth;
+            canvas.height = maxWidth * 0.833;
+            
+            if (player.x > canvas.width) {
+                player.x = canvas.width / 2;
+            }
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Game State
+        let gameRunning = false;
+        let score = 0;
+        let lives = 3;
+        let highScore = parseInt(localStorage.getItem('highScore')) || 0;
+        let collectedCards = JSON.parse(localStorage.getItem('collectedCards')) || [];
+        
+        // Player (Cat)
+        const player = {
+            x: canvas.width / 2,
+            y: canvas.height - 70,
+            width: 55,
+            height: 55,
+            speed: 6,
+            shooting: false
+        };
+        
+        // Bullets
+        let bullets = [];
+        
+        // Hearts (enemies)
+        let hearts = [];
+        let heartSpawnTimer = 0;
+        const heartSpawnInterval = 85;
+        
+        // Controls
+        let moveLeft = false;
+        let moveRight = false;
+        
+        // Romantic phrases
+        const phrases = [
+            "Uy ❤️", "Diohh miohh 💕", "Que lindo 😍", "Uff 🔥", "xD <3 te quiero",
+            "Niña 👸", "Preciosa ✨", "Ñeñeñe 🥰", "Tedible 💖", "Nouuu 😊",
+            "Que abuso 😘", "Eres mi sol ☀️", "Para ti mi amor 💝", "Mi razón 💗"
+        ];
+        
+        // Card rewards
+        const cardMilestones = [30, 60, 100, 150, 200, 300, 400, 500, 700, 1000];
+        
+        // Initialize
+        document.getElementById('highScore').textContent = highScore;
+        createParticles();
+        startGame();
+        
+        // Particles animation
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particles = ['💕', '💖', '💗', '💓', '💝', '❤️', '🌸', '✨', '🌟', '⭐'];
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.textContent = particles[Math.floor(Math.random() * particles.length)];
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.fontSize = (Math.random() * 20 + 18) + 'px';
+                particle.style.animationDuration = (Math.random() * 12 + 10) + 's';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                container.appendChild(particle);
+            }
+        }
+        
+        // Touch/Click Controls
+        const leftBtn = document.getElementById('leftBtn');
+        const rightBtn = document.getElementById('rightBtn');
+        const shootBtn = document.getElementById('shootBtn');
+        
+        leftBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveLeft = true; });
+        leftBtn.addEventListener('touchend', (e) => { e.preventDefault(); moveLeft = false; });
+        leftBtn.addEventListener('mousedown', () => { moveLeft = true; });
+        leftBtn.addEventListener('mouseup', () => { moveLeft = false; });
+        leftBtn.addEventListener('mouseleave', () => { moveLeft = false; });
+        
+        rightBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveRight = true; });
+        rightBtn.addEventListener('touchend', (e) => { e.preventDefault(); moveRight = false; });
+        rightBtn.addEventListener('mousedown', () => { moveRight = true; });
+        rightBtn.addEventListener('mouseup', () => { moveRight = false; });
+        rightBtn.addEventListener('mouseleave', () => { moveRight = false; });
+        
+        shootBtn.addEventListener('touchstart', (e) => { e.preventDefault(); shoot(); });
+        shootBtn.addEventListener('click', () => { shoot(); });
+        
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') moveLeft = true;
+            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') moveRight = true;
+            if (e.key === ' ' && gameRunning) {
+                e.preventDefault();
+                shoot();
+            }
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') moveLeft = false;
+            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') moveRight = false;
+        });
+        
+        // Draw cat
+        function drawCat() {
+            ctx.save();
+            
+            const baseX = player.x - 25;
+            const baseY = player.y - 28;
+            
+            // Body
+            ctx.fillStyle = '#ff9999';
+            ctx.fillRect(baseX, baseY + 10, 50, 38);
+            
+            // Ears
+            ctx.fillStyle = '#ffb3b3';
+            ctx.fillRect(baseX - 5, baseY, 15, 14);
+            ctx.fillRect(baseX + 40, baseY, 15, 14);
+            
+            // Eyes
+            ctx.fillStyle = '#000';
+            ctx.fillRect(baseX + 10, baseY + 20, 8, 8);
+            ctx.fillRect(baseX + 32, baseY + 20, 8, 8);
+            
+            // Nose
+            ctx.fillStyle = '#ff6b9d';
+            ctx.fillRect(baseX + 21, baseY + 32, 8, 5);
+            
+            // Mouth (opens when shooting)
+            if (player.shooting) {
+                ctx.fillStyle = '#000';
+                ctx.fillRect(baseX + 18, baseY + 40, 14, 5);
+            }
+            
+            ctx.restore();
+        }
+        
+        // Shoot bullet
+        function shoot() {
+            if (gameRunning && bullets.length < 5) {
+                bullets.push({
+                    x: player.x,
+                    y: player.y - 10,
+                    speed: 8
+                });
+                player.shooting = true;
+                setTimeout(() => player.shooting = false, 150);
+            }
+        }
+        
+        // Spawn hearts
+        function spawnHeart() {
+            const size = Math.random() * 18 + 28;
+            hearts.push({
+                x: Math.random() * (canvas.width - size),
+                y: -size,
+                size: size,
+                speed: Math.random() * 0.8 + 0.9,
+                rotation: Math.random() * 360,
+                rotationSpeed: (Math.random() - 0.5) * 3
+            });
+        }
+        
+        // Update game
+        function update() {
+            if (!gameRunning) return;
+            
+            // Move player
+            if (moveLeft && player.x > 30) {
+                player.x -= player.speed;
+            }
+            if (moveRight && player.x < canvas.width - 30) {
+                player.x += player.speed;
+            }
+            
+            // Update bullets
+            bullets = bullets.filter(bullet => {
+                bullet.y -= bullet.speed;
+                return bullet.y > 0;
+            });
+            
+            // Spawn hearts
+            heartSpawnTimer++;
+            if (heartSpawnTimer >= heartSpawnInterval) {
+                spawnHeart();
+                heartSpawnTimer = 0;
+            }
+            
+            // Update hearts
+            hearts = hearts.filter(heart => {
+                heart.y += heart.speed;
+                heart.rotation += heart.rotationSpeed;
+                
+                // Check collision with bullets
+                for (let i = bullets.length - 1; i >= 0; i--) {
+                    const bullet = bullets[i];
+                    const dx = bullet.x - heart.x;
+                    const dy = bullet.y - heart.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < heart.size) {
+                        bullets.splice(i, 1);
+                        score += 10;
+                        updateScore();
+                        showFloatingPhrase(heart.x, heart.y);
+                        checkCardRewards();
+                        return false;
+                    }
+                }
+                
+                // Check if heart reached bottom
+                if (heart.y > canvas.height) {
+                    lives--;
+                    updateLives();
+                    if (lives <= 0) {
+                        gameOver();
+                    }
+                    return false;
+                }
+                
+                return true;
+            });
+        }
+        
+        // Draw game
+        function draw() {
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#fce4ec');
+            gradient.addColorStop(1, '#f8bbd0');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            drawCat();
+            
+            bullets.forEach(bullet => {
+                ctx.save();
+                ctx.font = '26px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('💋', bullet.x, bullet.y);
+                ctx.restore();
+            });
+            
+            hearts.forEach(heart => {
+                ctx.save();
+                ctx.translate(heart.x, heart.y);
+                ctx.rotate(heart.rotation * Math.PI / 180);
+                ctx.font = heart.size + 'px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('❤️', 0, 0);
+                ctx.restore();
+            });
+        }
+        
+        // Game loop
+        function gameLoop() {
+            update();
+            draw();
+            if (gameRunning) {
+                requestAnimationFrame(gameLoop);
+            }
+        }
+        
+        // Update UI
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+        }
+        
+        function updateLives() {
+            const livesSymbols = '🥺'.repeat(Math.max(0, lives));
+            document.getElementById('lives').textContent = livesSymbols || '💔';
+        }
+        
+        // Show floating phrase
+        function showFloatingPhrase(x, y) {
+            const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+            const el = document.createElement('div');
+            el.className = 'floating-phrase';
+            el.textContent = phrase;
+            
+            const rect = canvas.getBoundingClientRect();
+            el.style.left = (rect.left + x) + 'px';
+            el.style.top = (rect.top + y) + 'px';
+            
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 2200);
+        }
+        
+        // Check card rewards
+        function checkCardRewards() {
+            for (let milestone of cardMilestones) {
+                if (score >= milestone && !collectedCards.includes(milestone)) {
+                    collectedCards.push(milestone);
+                    localStorage.setItem('collectedCards', JSON.stringify(collectedCards));
+                    showCardReward();
+                    break;
+                }
+            }
+        }
+        
+        // Show card reward
+        function showCardReward() {
+            gameRunning = false;
+            document.getElementById('rewardScreen').style.display = 'flex';
+        }
+        
+        // Close reward and start countdown
+        function closeReward() {
+            document.getElementById('rewardScreen').style.display = 'none';
+            startCountdown();
+        }
+        
+        // Countdown
+        function startCountdown() {
+            document.getElementById('countdownScreen').style.display = 'flex';
+            let count = 3;
+            const countdownEl = document.getElementById('countdownNumber');
+            
+            const countInterval = setInterval(() => {
+                if (count > 0) {
+                    countdownEl.textContent = count;
+                    count--;
+                } else {
+                    clearInterval(countInterval);
+                    document.getElementById('countdownScreen').style.display = 'none';
+                    gameRunning = true;
+                    gameLoop();
+                }
+            }, 1000);
+        }
+        
+        // Game over
+        function gameOver() {
+            gameRunning = false;
+            
+            const isNewRecord = score > highScore;
+            if (isNewRecord) {
+                highScore = score;
+                localStorage.setItem('highScore', highScore);
+                document.getElementById('recordMsg').style.display = 'block';
+            } else {
+                document.getElementById('recordMsg').style.display = 'none';
+            }
+            
+            document.getElementById('finalScore').textContent = score + ' Puntos';
+            document.getElementById('gameOverScreen').style.display = 'flex';
+        }
+        
+        // Start game
+        function startGame() {
+            resetGame();
+            gameRunning = true;
+            gameLoop();
+        }
+        
+        // Restart game
+        function restartGame() {
+            document.getElementById('gameOverScreen').style.display = 'none';
+            resetGame();
+            gameRunning = true;
+            gameLoop();
+        }
+        
+        // Reset game
+        function resetGame() {
+            score = 0;
+            lives = 3;
+            bullets = [];
+            hearts = [];
+            heartSpawnTimer = 0;
+            player.x = canvas.width / 2;
+            updateScore();
+            updateLives();
+            document.getElementById('highScore').textContent = highScore;
+        }
+        
+        // View cards
+        function viewCards() {
+            window.location.href = 'cartas.html';
+        }
+    </script>
+</body>
+</html>

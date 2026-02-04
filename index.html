@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>💖 Dispara Corazones 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600;700;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #ffcce7;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #ff6b9d 75%, #ffc3a0 100%);
+            background-size: 400% 400%;
+            animation: gradientFlow 15s ease infinite;
+            z-index: 0;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating particles */
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            font-size: 25px;
+            opacity: 0;
+            will-change: transform, opacity;
+            animation: floatParticle linear infinite;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+                transform: scale(1);
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 40px;
+            padding: 50px 40px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4), 
+                        inset 0 0 60px rgba(255, 255, 255, 0.3);
+            max-width: 650px;
+            width: 90%;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            animation: containerEntrance 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 5px solid rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes containerEntrance {
+            0% {
+                opacity: 0;
+                transform: scale(0.5) translateY(100px) rotate(-15deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0) rotate(0);
+            }
+        }
+
+        /* Cat and hearts header */
+        .header-icons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            animation: iconsFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes iconsFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-15px) scale(1.05); }
+        }
+
+        .cat-icon {
+            font-size: clamp(50px, 12vw, 80px);
+            animation: catBounce 2s ease-in-out infinite;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+        }
+
+        @keyframes catBounce {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .heart-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .heart-icon {
+            font-size: clamp(25px, 6vw, 40px);
+            animation: heartPulse 1.5s ease-in-out infinite;
+        }
+
+        .heart-icon:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes heartPulse {
+            0%, 100% { 
+                transform: scale(1);
+                filter: hue-rotate(0deg);
+            }
+            50% { 
+                transform: scale(1.2);
+                filter: hue-rotate(20deg);
+            }
+        }
+
+        /* Title */
+        h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: clamp(36px, 8vw, 56px);
+            color: #e91e63;
+            margin-bottom: 15px;
+            text-shadow: 4px 4px 0 #ffc1e3, 
+                         8px 8px 20px rgba(233, 30, 99, 0.4);
+            animation: titleGlow 2s ease-in-out infinite;
+            letter-spacing: 2px;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { 
+                text-shadow: 4px 4px 0 #ffc1e3, 8px 8px 20px rgba(233, 30, 99, 0.4);
+            }
+            50% { 
+                text-shadow: 4px 4px 0 #ffc1e3, 8px 8px 40px rgba(233, 30, 99, 0.8);
+            }
+        }
+
+        /* Dedication box */
+        .dedication-box {
+            background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%);
+            border: 4px solid #f9a825;
+            border-radius: 25px;
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: 0 15px 40px rgba(249, 168, 37, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dedication-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .dedication-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(24px, 5vw, 32px);
+            color: #c2185b;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dedication-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(18px, 4vw, 24px);
+            color: #d81b60;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Instructions */
+        .instructions {
+            background: linear-gradient(135deg, #e1f5fe 0%, #b3e5fc 100%);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0, 188, 212, 0.2);
+        }
+
+        .instruction-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 12px 0;
+            font-size: clamp(14px, 3.5vw, 18px);
+            color: #01579b;
+            font-weight: 600;
+            animation: instructionSlide 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .instruction-item:nth-child(1) { animation-delay: 0.2s; }
+        .instruction-item:nth-child(2) { animation-delay: 0.4s; }
+        .instruction-item:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes instructionSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .instruction-icon {
+            font-size: clamp(20px, 5vw, 28px);
+        }
+
+        /* Play button */
+        .play-button {
+            background: linear-gradient(135deg, #e91e63, #f50057);
+            color: white;
+            border: none;
+            padding: 22px 60px;
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(18px, 4vw, 24px);
+            font-weight: 900;
+            border-radius: 60px;
+            cursor: pointer;
+            margin: 30px auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 15px 40px rgba(233, 30, 99, 0.5),
+                        inset 0 -5px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .play-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .play-button:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .play-button:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(233, 30, 99, 0.7);
+        }
+
+        .play-button:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        .play-icon {
+            font-size: clamp(24px, 6vw, 32px);
+            animation: playIconRotate 2s linear infinite;
+        }
+
+        @keyframes playIconRotate {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-10deg) scale(1.2); }
+            75% { transform: rotate(10deg) scale(1.2); }
+        }
+
+        /* Decorative hearts */
+        .deco-heart {
+            position: absolute;
+            font-size: 30px;
+            opacity: 0.2;
+            animation: decorativeFloat 4s ease-in-out infinite;
+        }
+
+        .deco-heart:nth-child(1) {
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .deco-heart:nth-child(2) {
+            top: 20%;
+            right: 8%;
+            animation-delay: 1s;
+        }
+
+        .deco-heart:nth-child(3) {
+            bottom: 15%;
+            left: 8%;
+            animation-delay: 2s;
+        }
+
+        .deco-heart:nth-child(4) {
+            bottom: 10%;
+            right: 10%;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes decorativeFloat {
+            0%, 100% { 
+                transform: translateY(0) rotate(0deg); 
+                opacity: 0.2;
+            }
+            50% { 
+                transform: translateY(-30px) rotate(180deg); 
+                opacity: 0.4;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                padding: 35px 25px;
+                border-radius: 30px;
+            }
+
+            .play-button {
+                padding: 18px 45px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .play-button {
+                padding: 25px 70px;
+                font-size: 26px;
+            }
+
+            .container {
+                padding: 60px 50px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 750px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated background -->
+    <div class="animated-bg"></div>
+
+    <!-- Floating particles -->
+    <div class="particles-container" id="particlesContainer"></div>
+
+    <!-- Main container -->
+    <div class="container">
+        <!-- Decorative hearts -->
+        <div class="deco-heart">💕</div>
+        <div class="deco-heart">💖</div>
+        <div class="deco-heart">💗</div>
+        <div class="deco-heart">💝</div>
+
+        <!-- Header with cat and hearts -->
+        <div class="header-icons">
+            <div class="cat-icon">😺</div>
+            <div class="heart-group">
+                <div class="heart-icon">❤️</div>
+                <div class="heart-icon">💕</div>
+            </div>
+        </div>
+
+        <!-- Title -->
+        <h1>Dispara Corazones</h1>
+
+        <!-- Dedication box -->
+        <div class="dedication-box">
+            <div class="dedication-title">Para Mi Amor</div>
+            <div class="dedication-text">Con todo mi amor 💖</div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="instructions">
+            <div class="instruction-item">
+                <span class="instruction-icon">🎮</span>
+                <span>Usa A/D o ← → para mover</span>
+            </div>
+            <div class="instruction-item">
+                <span class="instruction-icon">💋</span>
+                <span>ESPACIO para disparar corazones</span>
+            </div>
+            <div class="instruction-item">
+                <span class="instruction-icon">🎯</span>
+                <span>¡Elimina corazones y desbloquea premios!</span>
+            </div>
+        </div>
+
+        <!-- Play button -->
+        <button class="play-button" onclick="startGame()">
+            <span class="play-icon">💖</span>
+            <span>¡Jugar!</span>
+            <span class="play-icon">💖</span>
+        </button>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const container = document.getElementById('particlesContainer');
+            const particles = ['💕', '💖', '💗', '💓', '💝', '❤️', '🌸', '✨', '🌟', '⭐', '🎀', '💐'];
+            const particleCount = window.innerWidth < 768 ? 20 : 35;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.textContent = particles[Math.floor(Math.random() * particles.length)];
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                particle.style.animationDuration = (Math.random() * 10 + 12) + 's';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Add button sound effect simulation
+        const playButton = document.querySelector('.play-button');
+        
+        playButton.addEventListener('mouseenter', () => {
+            playButton.style.animation = 'none';
+            setTimeout(() => {
+                playButton.style.animation = '';
+            }, 10);
+        });
+
+        // Start game function
+        function startGame() {
+            // Add click animation
+            playButton.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                window.location.href = 'game.html';
+            }, 300);
+        }
+
+        // Initialize
+        createParticles();
+
+        // Add sparkle effect on mouse move (desktop only)
+        if (window.innerWidth >= 768) {
+            document.addEventListener('mousemove', (e) => {
+                if (Math.random() > 0.95) {
+                    const sparkle = document.createElement('div');
+                    sparkle.textContent = ['✨', '⭐', '💫'][Math.floor(Math.random() * 3)];
+                    sparkle.style.position = 'fixed';
+                    sparkle.style.left = e.clientX + 'px';
+                    sparkle.style.top = e.clientY + 'px';
+                    sparkle.style.pointerEvents = 'none';
+                    sparkle.style.fontSize = '20px';
+                    sparkle.style.zIndex = '9999';
+                    sparkle.style.animation = 'sparkleEffect 1s ease-out forwards';
+                    document.body.appendChild(sparkle);
+                    
+                    setTimeout(() => sparkle.remove(), 1000);
+                }
+            });
+        }
+
+        // Add sparkle animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes sparkleEffect {
+                0% {
+                    opacity: 1;
+                    transform: scale(0) rotate(0deg);
+                }
+                50% {
+                    transform: scale(1.5) rotate(180deg);
+                }
+                100% {
+                    opacity: 0;
+                    transform: scale(0) rotate(360deg) translateY(-50px);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
